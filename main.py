@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+#TODO: 
+
 import json, os, shutil, sys, urllib3
 from html.parser import HTMLParser
 
@@ -53,7 +55,14 @@ for line in pageLines:
 dllink = parser.dllink
 parser.close()
 
-print('Downloading {}'.format(parser.dllink))
-musicFn = config['output_dir'] + '/' + dllink[dllink.rfind('/')+1:]
-with http.request('GET', dllink, preload_content=False) as r, open(musicFn, 'wb') as outFile:
-    shutil.copyfileobj(r, outFile)
+# Check if sound file is already downloaded
+musicFn = dllink[dllink.rfind('/')+1:]
+musicPath = config['output_dir'] + '/' + musicFn
+if os.path.isfile(musicPath):
+    print('{} has already been downloaded'.format(musicFn))
+else:
+    # Download sound file
+    print('Downloading {}...'.format(parser.dllink))
+    with http.request('GET', dllink, preload_content=False) as r, open(musicPath, 'wb') as outFile:
+        shutil.copyfileobj(r, outFile)
+    print('Done')
